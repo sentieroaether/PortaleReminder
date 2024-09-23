@@ -1,5 +1,4 @@
-pandas
 streamlit
-pyautogui
-pywhatkit
-openpyxl  # Per lavorare con file Excel
+pandas
+openpyxl
+urllib3
