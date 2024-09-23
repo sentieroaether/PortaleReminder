@@ -6,11 +6,8 @@ import os
 import streamlit as st
 import json
 import urllib.parse
-import locale
 import calendar
-
-# Imposta la lingua italiana
-locale.setlocale(locale.LC_TIME, 'it_IT')
+from datetime import datetime
 
 
 # Funzione per generare hash della password
