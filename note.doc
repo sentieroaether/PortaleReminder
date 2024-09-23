@@ -1,0 +1,49 @@
+# Custom CSS for styling your Streamlit app
+st.markdown(
+    """
+    <style>
+    /* Light pink background for the whole app */
+    .stApp {
+        background-color: #FFF5F7;
+    }
+
+    /* Soft pink button with white text */
+    div.stButton > button {
+        color: white;
+        background-color: #FADADD;  /* Very Light Pink */
+        border: none;
+        padding: 10px 24px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 12px;
+        transition: background-color 0.3s ease; /* Smooth transition for hover */
+    }
+
+    /* Hover effect: change button color to darker pink */
+    div.stButton > button:hover {
+        background-color: #FFB6C1;  /* Slightly darker pink on hover */
+    }
+
+    /* Light peach pink headers */
+    h1, h2, h3 {
+        color: #000000;  /* Black headers */
+    }
+
+    /* Darker gray text for better contrast */
+    p {
+        color: #2D2D2D;  /* Darker Gray for text */
+    }
+
+    /* Accent elements with soft coral pink */
+    .stAlert {
+        background-color: #FFCAD4;
+        color: #FFFFFF;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
