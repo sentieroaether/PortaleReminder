@@ -1,13 +1,11 @@
 import pandas as pd
 from datetime import datetime, timedelta
 import hashlib
-import pyautogui
 import time
 import os
-import pywhatkit as kit
 import streamlit as st
 import json
-
+import urllib.parse
 
 # Funzione per generare hash della password
 def hash_password(password):
@@ -87,23 +85,37 @@ def format_appointments(df):
     df['Ora Visita'] = df['Ora Visita'].apply(lambda x: x.strftime('%H:%M') if isinstance(x, datetime) else x)
     return df
 
+
 # Funzione per formattare il numero di telefono con il prefisso internazionale
 def format_phone_number(phone_number):
     phone_number = str(phone_number).strip().replace(' ', '').replace(',', '')
-    if not phone_number.startswith('+'):
-        phone_number = '+39' + phone_number
+    if not phone_number.startswith('39'):  # Prefisso per l'Italia senza segno +
+        phone_number = '39' + phone_number
     return phone_number
 
-# Funzione per inviare un messaggio WhatsApp
+# Funzione per generare il link WhatsApp con messaggio precompilato
+def generate_whatsapp_link(numero, messaggio):
+    numero = format_phone_number(numero)
+    encoded_message = urllib.parse.quote(messaggio, safe='')  # Codifica corretta del messaggio, safe='' codifica tutti i caratteri speciali
+    whatsapp_link = f"https://wa.me/{numero}?text={encoded_message}"
+    return whatsapp_link
+
+# Funzione per inviare un messaggio WhatsApp tramite link
 def send_whatsapp_message_instantly(numero, messaggio):
     try:
-        numero = format_phone_number(numero)
-        kit.sendwhatmsg_instantly(numero, messaggio)
-        time.sleep(10)
-        pyautogui.press('enter')
-        st.success(f"Messaggio inviato correttamente a {numero}")
+        link = generate_whatsapp_link(numero, messaggio)  # Genera il link per WhatsApp
+        st.markdown(f'<a href="{link}" target="_blank">Clicca qui per inviare il messaggio a {numero}</a>', unsafe_allow_html=True)  # Forza apertura in nuova tab
+        st.success("")
     except Exception as e:
-        st.error(f"Errore durante l'invio del messaggio: {e}")
+        st.error(f"Errore durante la generazione del link WhatsApp: {e}")
+
+# Funzione per creare il messaggio dinamico
+def create_message(nome, cognome, tipo_visita, giorno_visita, ora_visita):
+    giorno_visita_formattato = giorno_visita.strftime(f'%A %d %B %Y')  # Formatta la data nel formato desiderato
+    messaggio = (f"Gentile {nome} {cognome}, ti ricordiamo il tuo appuntamento "
+                 f"per {tipo_visita} il giorno {giorno_visita_formattato} alle ore {ora_visita} "
+                 f"presso lo studio della dottoressa Pezzella.")
+    return messaggio
 
 # Mappatura dei giorni della settimana e mesi in italiano
 giorni_settimana = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica']
